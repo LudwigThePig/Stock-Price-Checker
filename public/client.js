@@ -5,17 +5,12 @@ const  init = ()=>{
   const fetchers = {
     getOneStock: function(stock, like = false){
       
-      const request = {
-        symbol: stock,
-        likes: like      
-      }
+      const request = `/api/stock-prices?symbol=${stock}?like=${like}`
       
-      const options = {
-        type: 'GET',
-        body: JSON.stringify(request),
-        headers: {'Content-Type': 'application/json'}
-      }
-      return fetch('/api/stock-prices')
+      return fetch(request)
+        .then(res => res.json)
+        .then(data => data)
+        .catch(err => console.log(err));
     },
     getTwoStocks: function(stockOne, stockTwo, like = false){
     
@@ -32,7 +27,7 @@ const  init = ()=>{
     
     formOne.addEventListener('submit', function(e){
       e.preventDefault();
-      console.log(singleField.value);
+      fetchers.getOneStock(singleField.value);
     })
     formTwo.addEventListener('submit', function(e){
       e.preventDefault();
