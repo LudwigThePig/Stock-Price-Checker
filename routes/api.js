@@ -12,25 +12,33 @@ module.exports = function (app) {
     
     const like = req.query.like;
     const symb = req.query.symbol;
-    const price = (symbol)=>{
+    const price = async(symbol)=>{
       let response = `https://api.iextrading.com/1.0/stock/${symbol}/price`;
-      fetch(response)
-        .then(res => {res.json()})
-        .then(data => console.log(data))
+      await fetch(response)
+        .then(res => res.json())
+        .then(data => data)
         .catch(err => console.log(err));
     }
-    price(symb);
-    // Stock.findOne({symbol: symb})
-    //   .then(stock => {
-    //     if (!stock){
-    //       let newStock = new Stock({
-    //         symbol: symb,
-    //         like: like ? 1 : 0,
-    //         price: price(symb)            
-    //       });
-    //       return newStock.save();
-    //     }
-    //   })
+    
+    Stock.findOne({symbol: symb})
+      .then(stock => {
+        if (!stock){
+          let newStock = new Stock({
+            symbol: symb,
+            like: like ? 1 : 0,
+            price: price(symb)            
+          });
+          return newStock.save();
+        } else {
+          const update = {
+            price: price(symb)
+          }
+          if (like){
+            update.like = like++;
+          }
+          Stock.update(stock, update)
+        }
+      })
     });
     
 };
