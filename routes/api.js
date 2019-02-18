@@ -9,9 +9,10 @@ module.exports = function (app) {
 
   app.route('/api/stock-prices')
     .get(function (req, res){
-    const stockSymbol = req;
-    
-    Stock.findOne({})
+    const stockSymbol = req.query.symbol;
+    console.log(req.query);
+    res.json({message: 'lol'})
+    // Stock.findOne({})
     
       
     });
