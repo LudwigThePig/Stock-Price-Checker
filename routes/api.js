@@ -10,7 +10,7 @@ module.exports = function (app) {
   app.route('/api/stock-prices')
     .get(function (req, res){
     
-    const like = req.query.like;
+    let like = req.query.like;
     const symb = req.query.symbol;    
     const price = fetch(`https://api.iextrading.com/1.0/stock/${symb}/price`).then(res => res.json());
         // .then(data => data)
@@ -21,16 +21,11 @@ module.exports = function (app) {
       Stock.findOne({symbol: symb})
       .then(stock => {
         if (!stock){
-          price.then(res=>res)
-            .then(data=>{
-          let newStock = new Stock({
+          let stock = new Stock({
             symbol: symb,
             like: like ? 1 : 0,
-            price: data            
           });
-          
-        return newStock.save()})
-          .catch(err=>err);
+          stock.save();            
         } else {
           const update = {
             price: price
@@ -43,5 +38,14 @@ module.exports = function (app) {
       })
       .catch(err => console.log(err));
     });
+    price.then(data =>{ 
+      let response = {
+        symbol: symb,
+        price: data,
+        like: like
+      }
+      res.json(response)
+    })
+    .catch(err => console.log(err));
   })
 };
