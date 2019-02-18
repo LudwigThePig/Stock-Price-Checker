@@ -11,27 +11,29 @@ module.exports = function (app) {
     .get(function (req, res){
     
     const like = req.query.like;
-    const symb = req.query.symbol;
-    const price = async(symbol)=>{
-      let response = `https://api.iextrading.com/1.0/stock/${symbol}/price`;
-      await fetch(response)
-        .then(res => res.json())
-        .then(data => data)
-        .catch(err => console.log(err));
-    }
+    const symb = req.query.symbol;    
+    const price = fetch(`https://api.iextrading.com/1.0/stock/${symb}/price`).then(res => res.json());
+        // .then(data => data)
+        // .catch(err => console.log(err));
     
-    Stock.findOne({symbol: symb})
+    
+    Promise.resolve(price).then(_=>{
+      Stock.findOne({symbol: symb})
       .then(stock => {
         if (!stock){
+          price.then(res=>res)
+            .then(data=>{
           let newStock = new Stock({
             symbol: symb,
             like: like ? 1 : 0,
-            price: price(symb)            
+            price: data            
           });
-          return newStock.save();
+          
+        return newStock.save()})
+          .catch(err=>err);
         } else {
           const update = {
-            price: price(symb)
+            price: price
           }
           if (like){
             update.like = like++;
@@ -39,6 +41,7 @@ module.exports = function (app) {
           Stock.update(stock, update)
         }
       })
+      .catch(err => console.log(err));
     });
-    
+  })
 };
