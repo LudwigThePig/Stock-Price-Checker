@@ -15,11 +15,12 @@ body{
   margin: auto;
 }
 
-#forms{
+#body{
   background:#454851;
   height: 90vh;
   color: #fff;
-  
+}
+#forms{
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
@@ -57,4 +58,10 @@ button, .button{
 	font-weight: bold;
 	padding: 2px 5px;
 	text-decoration: none;
+}
+.stock-box{
+  background: #ddd;
+  display: block;
+  color: #222;
+  padding: 30px;
 }
