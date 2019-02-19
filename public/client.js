@@ -30,10 +30,9 @@ const listeners = ()=>{
   
   formOne.addEventListener('submit', function(e){
     e.preventDefault();
-    fetchers.getOneStock(singleField.value, likeOne.value)
-    console.log(likeOne.value);
-      setTimeout(_=>renderer(results), 1000);
-    ;
+    fetchers.getOneStock(singleField.value, likeOne.checked);
+    setTimeout(_=>renderer(results), 1000);
+    
   })
   formTwo.addEventListener('submit', function(e){
     e.preventDefault();
@@ -55,10 +54,15 @@ const renderer = (results)=>{
     price.innerText = results[i].price;
     likes.innerText = results[i].likes;
     
+    div.setAttribute('id', results[i].symbol)
+    
     div.appendChild(symbol);
     div.appendChild(price);
     div.appendChild(likes);
     
+    while(domNode.firstChild){
+      domNode.removeChild(domNode.firstChild);
+    }
     domNode.appendChild(div);
   }
   
