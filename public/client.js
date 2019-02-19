@@ -20,14 +20,18 @@ const fetchers = {
 const listeners = ()=>{
     const formOne = document.getElementById("singleStock"),
       singleField = document.getElementsByName("stock")[0],
+      likeOne = document.getElementsByName("like")[0],
 
       formTwo = document.getElementById("twoStocks"),
       compareFieldOne = document.getElementsByName("stock")[1],
-      compareFieldTwo = document.getElementsByName("stock")[2];
+      compareFieldTwo = document.getElementsByName("stock")[2],
+      likeTwo = document.getElementsByName("like")[1];
+
   
   formOne.addEventListener('submit', function(e){
     e.preventDefault();
-    fetchers.getOneStock(singleField.value)
+    fetchers.getOneStock(singleField.value, likeOne.value)
+    console.log(likeOne.value);
       setTimeout(_=>renderer(results), 1000);
     ;
   })
