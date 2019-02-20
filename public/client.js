@@ -23,6 +23,20 @@ const fetchers = {
   }
 }
 
+const validator = (symbols)=>{
+  for (let i in symbols){
+    const regex = /[^a-z]/i;
+    if (symbols[i].length > 4){
+      alert('Stock symbols cannot be longer than four characters.');
+      return false;
+    } else if (regex.test(symbols[i])){
+      alert('Stock symbols can only contain alphabetical characters.')
+      return false;
+    }
+  }
+  return true;
+}
+
 const listeners = ()=>{
     const formOne = document.getElementById("singleStock"),
       singleField = document.getElementsByName("stock")[0],
@@ -35,14 +49,21 @@ const listeners = ()=>{
   
   formOne.addEventListener('submit', function(e){
     e.preventDefault();
-    fetchers.getOneStock(singleField.value, likeOne.checked);
+    const val = singleField.value
+    if (validator([val]) === true){
+      fetchers.getOneStock(val, likeOne.checked);
+    }
     singleField.value = '';
     likeOne.checked = false;    
   })
   
   formTwo.addEventListener('submit', function(e){
     e.preventDefault();
-    fetchers.getTwoStocks(compareFieldOne.value, compareFieldTwo.value, likeTwo.checked);
+    const val1 = compareFieldOne.value,
+          val2 = compareFieldTwo.value;
+    if (validator([val1, val2])){
+      fetchers.getTwoStocks( val1, val2, likeTwo.checked);
+    }
     compareFieldOne.value = '';
     compareFieldTwo.value = '';
     likeTwo.checked = false;
