@@ -19,7 +19,6 @@ module.exports = function (app) {
     
     if (req.query.symboltwo !== undefined){
       symb.push(req.query.symboltwo);
-      console.log('two symbs');
     }
         
     const db = (symbol)=>{
@@ -39,11 +38,11 @@ module.exports = function (app) {
             });
             stock.save();            
           } else {
-            if (like === 'true'){
-              obj.like = stock.likes + 1;
-              Stock.update({symbol: symbol}, {likes: stock.likes + 1})
+            if (like === 'true'){           
+              obj.likes = stock.likes + 1;
+              stock.likes = obj.likes;
+              stock.save();
             } else {
-              console.log('line 46');
               like = stock.likes;
             }
           }
@@ -64,4 +63,3 @@ module.exports = function (app) {
     
   })//end get function
 }//end module.exports
- 
