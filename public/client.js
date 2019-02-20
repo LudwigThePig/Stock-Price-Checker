@@ -5,18 +5,20 @@ let results = [];
 const fetchers = {
   getOneStock: function(stock, like = false){
     
-    const request = `/api/stock-prices?symbol=${stock}&like=${like}`;
+    const request = `/api/stock-prices?symbolone=${stock}&like=${like}`;
     
     return fetch(request)
       .then(res => res.json())
-      .then(data => results.push(data))
+      .then(data => results.push(data[0]))
+      .then( _=> renderer(results))
       .catch(err => console.log(err));
   },
   getTwoStocks: function(stockOne, stockTwo, like = false){
-  const request = `/api/stock-prices?symbolone=${stockOne}&symboletwo=${stockTwo}&like=${like}`;
+  const request = `/api/stock-prices?symbolone=${stockOne}&symboltwo=${stockTwo}&like=${like}`;
     return fetch(request)
       .then(res => res.json())
-      .then(data => console.log(data))
+      .then(data => results = data)
+      .then( _=> renderer(results))
       .catch(err => console.log(err));
   }
 }
@@ -34,7 +36,6 @@ const listeners = ()=>{
   formOne.addEventListener('submit', function(e){
     e.preventDefault();
     fetchers.getOneStock(singleField.value, likeOne.checked);
-    setTimeout(_=>renderer(results), 1000);
     singleField.value = '';
     likeOne.checked = false;    
   })
@@ -49,9 +50,12 @@ const listeners = ()=>{
 }
 
 const renderer = (results)=>{
+  const domNode = document.getElementById('display');
+  while(domNode.firstChild){
+    domNode.removeChild(domNode.firstChild);
+  }
   
-  for (let i = 0; i<results.length; i++){
-    const domNode = document.getElementById('display');
+  for (let i = 0; i < results.length; i++){
     const div = document.createElement('div');
     const symbol = document.createElement('h1');
     const price = document.createElement('p');
@@ -67,9 +71,6 @@ const renderer = (results)=>{
     div.appendChild(price);
     div.appendChild(likes);
     
-    while(domNode.firstChild){
-      domNode.removeChild(domNode.firstChild);
-    }
     domNode.appendChild(div);
   } 
 }
